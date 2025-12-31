@@ -1,0 +1,16 @@
+secrets.yaml
+.env
+authorized_keys
+*.key
+*.pem
+id_ed25519
+id_ed25519.pub
+*.private
+.DS_Store
+Thumbs.db
+.swp
+*.tmp
+*~
+*.bak
+*.backup
+*.old

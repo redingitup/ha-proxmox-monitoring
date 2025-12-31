@@ -1,0 +1,24 @@
+automation:
+  - id: r730xd_high_temp_warning
+    alias: "R730XD High Temp Warning"
+    trigger:
+      platform: numeric_state
+      entity_id: sensor.r730xd_cpu_temperature
+      above: 48
+    action:
+      service: notify.mobile_app_your_phone
+      data:
+        title: "R730XD Temperature Warning"
+        message: "CPU: {{ states('sensor.r730xd_cpu_temperature') }} degrees, RAID: {{ states('sensor.r730xd_raid_temperature') }} degrees"
+
+  - id: r730xd_critical_temp
+    alias: "R730XD CRITICAL Temperature"
+    trigger:
+      platform: numeric_state
+      entity_id: sensor.r730xd_cpu_temperature
+      above: 55
+    action:
+      service: notify.mobile_app_your_phone
+      data:
+        title: "CRITICAL: R730XD OVERHEATING"
+        message: "CPU: {{ states('sensor.r730xd_cpu_temperature') }} degrees - IMMEDIATE ACTION REQUIRED"

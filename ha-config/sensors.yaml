@@ -1,0 +1,20 @@
+sensor:
+  - platform: command_line
+    name: "R730XD CPU Temperature"
+    unique_id: "r730xd_cpu_temp"
+    command: 'ssh -o StrictHostKeyChecking=no -o ConnectTimeout=5 root@192.168.1.10 /usr/local/bin/get-r730xd-temps.sh | grep -oP "\"cpu_temp\": \K[0-9.]+"'
+    unit_of_measurement: "°C"
+    scan_interval: 30
+    value_template: "{{ value | float | round(1) }}"
+    device_class: temperature
+    icon: "mdi:thermometer"
+
+  - platform: command_line
+    name: "R730XD RAID Temperature"
+    unique_id: "r730xd_raid_temp"
+    command: 'ssh -o StrictHostKeyChecking=no -o ConnectTimeout=5 root@192.168.1.10 /usr/local/bin/get-r730xd-temps.sh | grep -oP "\"raid_temp\": \K[0-9.]+"'
+    unit_of_measurement: "°C"
+    scan_interval: 30
+    value_template: "{{ value | float | round(1) }}"
+    device_class: temperature
+    icon: "mdi:chip"
