@@ -1,0 +1,49 @@
+# Helper scripts for Proxmox automation
+
+# Restart a specific VM
+restart_vm:
+  description: "Restart a Proxmox VM"
+  fields:
+    vm_id:
+      description: "VM ID in Proxmox"
+      example: "100"
+    node:
+      description: "Proxmox node name"
+      example: "pve1"
+  sequence:
+    - service: persistent_notification.create
+      data:
+        title: "VM Restart Initiated"
+        message: "Restarting VM {{ vm_id }} on node {{ node }}"
+        notification_id: "vm_restart_{{ vm_id }}"
+
+# Create alert for high resource usage
+alert_high_resources:
+  description: "Alert when resources exceed thresholds"
+  fields:
+    resource_type:
+      description: "Type of resource (cpu, memory, disk)"
+      example: "cpu"
+    resource_value:
+      description: "Current resource value"
+      example: "85"
+  sequence:
+    - service: persistent_notification.create
+      data:
+        title: "⚠️ High {{ resource_type }} Usage Alert"
+        message: "{{ resource_type }} usage is at {{ resource_value }}%"
+        notification_id: "high_{{ resource_type }}"
+
+# Send status report
+send_proxmox_report:
+  description: "Send Proxmox status report"
+  sequence:
+    - service: notify.notify
+      data:
+        title: "Proxmox Status Report"
+        message: |
+          CPU: {{ states('sensor.proxmox_cpu') }}%
+          Memory: {{ states('sensor.proxmox_memory') }}%
+          Disk: {{ states('sensor.proxmox_disk') }}%
+          R730XD CPU Temp: {{ states('sensor.r730xd_cpu_temperature') }}°C
+          R730XD RAID Temp: {{ states('sensor.r730xd_raid_temperature') }}°C
