@@ -89,6 +89,42 @@
       message: "Disk usage: {{ states('sensor.proxmox_disk') }}%"
 
 # ==============================================================================
+# DELL R730XD HARDWARE TEMPERATURE MONITORING
+# ==============================================================================
+
+# Alert when R730XD CPU temperature is high
+- id: r730xd_high_cpu_temp_alert
+  alias: R730XD High CPU Temperature
+  description: Alert when R730XD CPU temperature exceeds 85°C
+  trigger:
+    platform: numeric_state
+    entity_id: sensor.r730xd_cpu_temperature
+    above: 85
+    for:
+      minutes: 5
+  action:
+    service: notify.notify
+    data:
+      title: "🔥 R730XD High CPU Temperature"
+      message: "CPU temp: {{ states('sensor.r730xd_cpu_temperature') }}°C"
+
+# Alert when R730XD RAID temperature is high
+- id: r730xd_high_raid_temp_alert
+  alias: R730XD High RAID Temperature
+  description: Alert when R730XD RAID temperature exceeds 80°C
+  trigger:
+    platform: numeric_state
+    entity_id: sensor.r730xd_raid_temperature
+    above: 80
+    for:
+      minutes: 5
+  action:
+    service: notify.notify
+    data:
+      title: "🔥 R730XD High RAID Temperature"
+      message: "RAID temp: {{ states('sensor.r730xd_raid_temperature') }}°C"
+
+# ==============================================================================
 # HEALTH CHECK AUTOMATIONS
 # ==============================================================================
 
@@ -150,6 +186,9 @@
       message: "Proxmox node is back online"
 
 # ==============================================================================
+# NOTES
+# ==============================================================================
+
 # NOTE: Entity IDs may vary based on your Proxmox setup
 # Check Developer Tools > States to find correct entity IDs:
 # Settings > Developer Tools > States
@@ -159,4 +198,21 @@
 # - sensor.proxmox_cpu
 # - sensor.proxmox_memory
 # - sensor.proxmox_disk
+# - sensor.r730xd_cpu_temperature
+# - sensor.r730xd_raid_temperature
+#
+# APPROACH NOTES:
+# This file contains BOTH generic Proxmox monitoring AND R730XD-specific monitoring:
+# 
+# 1. GENERIC PROXMOX (lines 1-100+):
+#    - Requires ProxmoxVE integration to be installed via HACS
+#    - Works with any Proxmox system
+#    - See README.md for ProxmoxVE integration setup
+#
+# 2. R730XD-SPECIFIC (lines 70+):
+#    - Uses SSH sensors defined in sensors.yaml
+#    - Monitors hardware temperatures directly
+#    - Requires SSH access to Proxmox and sensors utility
+#    - See DETAILED_SETUP.md for SSH key setup
+
 # ==============================================================================

@@ -9,6 +9,13 @@ proxmox_monitoring:
     - sensor.proxmox_disk
     - binary_sensor.proxmox_node_status
 
+r730xd_monitoring:
+  name: "R730XD Hardware"
+  icon: mdi:server-network
+  entities:
+    - sensor.r730xd_cpu_temperature
+    - sensor.r730xd_raid_temperature
+
 proxmox_vms:
   name: "Proxmox VMs"
   icon: mdi:virtual-machine

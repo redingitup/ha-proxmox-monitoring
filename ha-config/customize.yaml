@@ -1,8 +1,6 @@
 # Customize Proxmox entities for better display
 
-# Example customizations for Proxmox entities
-# Adjust entity IDs to match your actual Proxmox setup
-
+# Generic Proxmox entities (from ProxmoxVE integration)
 sensor.proxmox_cpu:
   friendly_name: "Proxmox CPU Usage"
   icon: mdi:cpu-64-bit
@@ -22,6 +20,17 @@ binary_sensor.proxmox_node_status:
   friendly_name: "Proxmox Node Status"
   icon: mdi:server-network
   device_class: connectivity
+
+# R730XD specific entities (from SSH sensors)
+sensor.r730xd_cpu_temperature:
+  friendly_name: "R730XD CPU Temperature"
+  icon: mdi:thermometer
+  device_class: temperature
+
+sensor.r730xd_raid_temperature:
+  friendly_name: "R730XD RAID Temperature"
+  icon: mdi:chip
+  device_class: temperature
 
 # Customize all VM sensors
 "binary_sensor.proxmox_.*_running":

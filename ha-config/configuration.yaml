@@ -5,25 +5,29 @@ home_assistant:
   elevation: 0
   unit_system: metric
   time_zone: UTC
-  customize: !include customize.yaml
 
 # Configure YAML-based automations
 automation: !include automations.yaml
 script: !include scripts.yaml
-
-# Group entities for dashboard
 group: !include groups.yaml
+sensor: !include sensors.yaml
+
+# Entity customization
+customize: !include customize.yaml
 
 # Logging
 logger:
   default: warning
   logs:
     proxmoxve: debug
+    command_line: debug
 
-# Customize Proxmox entities
+# Customize Proxmox entities globally
 homeassistant:
   customize_glob:
     "sensor.proxmox_*":
       icon: mdi:server
+    "sensor.r730xd_*":
+      icon: mdi:thermometer
     "binary_sensor.proxmox_*_running":
       icon: mdi:play-circle

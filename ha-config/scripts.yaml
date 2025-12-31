@@ -45,3 +45,5 @@ send_proxmox_report:
           CPU: {{ states('sensor.proxmox_cpu') }}%
           Memory: {{ states('sensor.proxmox_memory') }}%
           Disk: {{ states('sensor.proxmox_disk') }}%
+          R730XD CPU Temp: {{ states('sensor.r730xd_cpu_temperature') }}°C
+          R730XD RAID Temp: {{ states('sensor.r730xd_raid_temperature') }}°C
