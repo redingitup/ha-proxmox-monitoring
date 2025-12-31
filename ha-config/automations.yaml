@@ -1,24 +1,162 @@
-automation:
-  - id: r730xd_high_temp_warning
-    alias: "R730XD High Temp Warning"
-    trigger:
-      platform: numeric_state
-      entity_id: sensor.r730xd_cpu_temperature
-      above: 48
-    action:
-      service: notify.mobile_app_your_phone
-      data:
-        title: "R730XD Temperature Warning"
-        message: "CPU: {{ states('sensor.r730xd_cpu_temperature') }} degrees, RAID: {{ states('sensor.r730xd_raid_temperature') }} degrees"
+# Home Assistant Proxmox Monitoring - Example Automations
+# These automations require the ProxmoxVE integration to be installed
+# See README.md for installation instructions
 
-  - id: r730xd_critical_temp
-    alias: "R730XD CRITICAL Temperature"
-    trigger:
-      platform: numeric_state
-      entity_id: sensor.r730xd_cpu_temperature
-      above: 55
-    action:
-      service: notify.mobile_app_your_phone
-      data:
-        title: "CRITICAL: R730XD OVERHEATING"
-        message: "CPU: {{ states('sensor.r730xd_cpu_temperature') }} degrees - IMMEDIATE ACTION REQUIRED"
+# ==============================================================================
+# VM MONITORING AUTOMATIONS
+# ==============================================================================
+
+# Notify when any Proxmox VM starts
+- id: proxmox_vm_started
+  alias: Proxmox VM Started
+  description: Send notification when a Proxmox VM starts
+  trigger:
+    platform: state
+    entity_id:
+      - binary_sensor.proxmox_node_vm_running
+    to: "on"
+  action:
+    service: notify.notify
+    data:
+      title: "✅ Proxmox VM Started"
+      message: "{{ trigger.to_state.name }} is now running"
+
+# Notify when any Proxmox VM stops
+- id: proxmox_vm_stopped
+  alias: Proxmox VM Stopped
+  description: Send notification when a Proxmox VM stops
+  trigger:
+    platform: state
+    entity_id:
+      - binary_sensor.proxmox_node_vm_running
+    to: "off"
+  action:
+    service: notify.notify
+    data:
+      title: "⚠️ Proxmox VM Stopped"
+      message: "{{ trigger.to_state.name }} has stopped"
+
+# ==============================================================================
+# RESOURCE MONITORING AUTOMATIONS
+# ==============================================================================
+
+# Alert when CPU usage is high
+- id: proxmox_high_cpu_alert
+  alias: Proxmox High CPU Alert
+  description: Alert when Proxmox CPU usage exceeds 80%
+  trigger:
+    platform: numeric_state
+    entity_id: sensor.proxmox_cpu
+    above: 80
+    for:
+      minutes: 5
+  action:
+    service: notify.notify
+    data:
+      title: "🔴 Proxmox High CPU Usage"
+      message: "CPU usage: {{ states('sensor.proxmox_cpu') }}%"
+
+# Alert when memory usage is high
+- id: proxmox_high_memory_alert
+  alias: Proxmox High Memory Alert
+  description: Alert when Proxmox memory usage exceeds 85%
+  trigger:
+    platform: numeric_state
+    entity_id: sensor.proxmox_memory
+    above: 85
+    for:
+      minutes: 5
+  action:
+    service: notify.notify
+    data:
+      title: "🟡 Proxmox High Memory Usage"
+      message: "Memory usage: {{ states('sensor.proxmox_memory') }}%"
+
+# Alert when disk usage is high
+- id: proxmox_high_disk_alert
+  alias: Proxmox High Disk Alert
+  description: Alert when Proxmox disk usage exceeds 90%
+  trigger:
+    platform: numeric_state
+    entity_id: sensor.proxmox_disk
+    above: 90
+    for:
+      minutes: 10
+  action:
+    service: notify.notify
+    data:
+      title: "🔴 Proxmox High Disk Usage"
+      message: "Disk usage: {{ states('sensor.proxmox_disk') }}%"
+
+# ==============================================================================
+# HEALTH CHECK AUTOMATIONS
+# ==============================================================================
+
+# Daily health check summary
+- id: proxmox_daily_health_check
+  alias: Proxmox Daily Health Check
+  description: Send daily summary of Proxmox health
+  trigger:
+    platform: time
+    at: "09:00:00"
+  condition:
+    condition: time
+    weekday:
+      - mon
+      - tue
+      - wed
+      - thu
+      - fri
+  action:
+    service: notify.notify
+    data:
+      title: "📊 Proxmox Health Report"
+      message: |
+        CPU: {{ states('sensor.proxmox_cpu') }}%
+        Memory: {{ states('sensor.proxmox_memory') }}%
+        Disk: {{ states('sensor.proxmox_disk') }}%
+        VMs Running: {{ states('binary_sensor.proxmox_node_running') }}
+
+# ==============================================================================
+# NODE STATUS MONITORING
+# ==============================================================================
+
+# Alert when Proxmox node goes offline
+- id: proxmox_node_down_alert
+  alias: Proxmox Node Down Alert
+  description: Alert when Proxmox node status changes to offline
+  trigger:
+    platform: state
+    entity_id: binary_sensor.proxmox_node_status
+    to: "off"
+  action:
+    service: notify.notify
+    data:
+      title: "🚨 CRITICAL: Proxmox Node Offline"
+      message: "Proxmox node has gone offline!"
+
+# Alert when Proxmox node comes back online
+- id: proxmox_node_up_alert
+  alias: Proxmox Node Up Alert
+  description: Notify when Proxmox node comes back online
+  trigger:
+    platform: state
+    entity_id: binary_sensor.proxmox_node_status
+    to: "on"
+  action:
+    service: notify.notify
+    data:
+      title: "✅ Proxmox Node Online"
+      message: "Proxmox node is back online"
+
+# ==============================================================================
+# NOTE: Entity IDs may vary based on your Proxmox setup
+# Check Developer Tools > States to find correct entity IDs:
+# Settings > Developer Tools > States
+#
+# Common patterns:
+# - binary_sensor.proxmox_{nodename}_{vmname}_running
+# - sensor.proxmox_cpu
+# - sensor.proxmox_memory
+# - sensor.proxmox_disk
+# ==============================================================================

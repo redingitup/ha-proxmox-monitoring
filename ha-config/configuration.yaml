@@ -1,0 +1,29 @@
+home_assistant:
+  name: Home
+  latitude: 0.00
+  longitude: 0.00
+  elevation: 0
+  unit_system: metric
+  time_zone: UTC
+  customize: !include customize.yaml
+
+# Configure YAML-based automations
+automation: !include automations.yaml
+script: !include scripts.yaml
+
+# Group entities for dashboard
+group: !include groups.yaml
+
+# Logging
+logger:
+  default: warning
+  logs:
+    proxmoxve: debug
+
+# Customize Proxmox entities
+homeassistant:
+  customize_glob:
+    "sensor.proxmox_*":
+      icon: mdi:server
+    "binary_sensor.proxmox_*_running":
+      icon: mdi:play-circle

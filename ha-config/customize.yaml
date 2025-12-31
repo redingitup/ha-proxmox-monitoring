@@ -1,0 +1,28 @@
+# Customize Proxmox entities for better display
+
+# Example customizations for Proxmox entities
+# Adjust entity IDs to match your actual Proxmox setup
+
+sensor.proxmox_cpu:
+  friendly_name: "Proxmox CPU Usage"
+  icon: mdi:cpu-64-bit
+  unit_of_measurement: "%"
+
+sensor.proxmox_memory:
+  friendly_name: "Proxmox Memory Usage"
+  icon: mdi:memory
+  unit_of_measurement: "%"
+
+sensor.proxmox_disk:
+  friendly_name: "Proxmox Disk Usage"
+  icon: mdi:harddisk
+  unit_of_measurement: "%"
+
+binary_sensor.proxmox_node_status:
+  friendly_name: "Proxmox Node Status"
+  icon: mdi:server-network
+  device_class: connectivity
+
+# Customize all VM sensors
+"binary_sensor.proxmox_.*_running":
+  icon: mdi:virtual-machine

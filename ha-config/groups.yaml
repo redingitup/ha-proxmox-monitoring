@@ -1,0 +1,19 @@
+# Group Proxmox entities for dashboard organization
+
+proxmox_monitoring:
+  name: "Proxmox Monitoring"
+  icon: mdi:server
+  entities:
+    - sensor.proxmox_cpu
+    - sensor.proxmox_memory
+    - sensor.proxmox_disk
+    - binary_sensor.proxmox_node_status
+
+proxmox_vms:
+  name: "Proxmox VMs"
+  icon: mdi:virtual-machine
+  entities:
+    # Add your VM entities here
+    # Examples:
+    # - binary_sensor.proxmox_pve_myvm_running
+    # - binary_sensor.proxmox_pve_db_running
